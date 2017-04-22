@@ -61,12 +61,157 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.node-gyp-install">module node-gyp-install</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.node-gyp-install.node-gyp-install">
+            function <span class="apidocSignatureSpan"></span>node-gyp-install
+            <span class="apidocSignatureSpan">(opts, cb)</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.node-gyp-install" id="apidoc.module.node-gyp-install">module node-gyp-install</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.node-gyp-install.node-gyp-install" id="apidoc.element.node-gyp-install.node-gyp-install">
+        function <span class="apidocSignatureSpan"></span>node-gyp-install
+        <span class="apidocSignatureSpan">(opts, cb)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function install(opts, cb) {
+  if (typeof opts === &#x27;function&#x27;) return install(null, opts)
+  if (!opts) opts = {}
+  if (!cb) cb = noop
+
+  var log = opts.log
+  var version = opts.version || process.version
+  if (version[0] !== &#x27;v&#x27;) version = &#x27;v&#x27; + version
+
+  var nightly = opts.nightly !== undefined ? opts.nightly : version.indexOf(&#x27;nightly&#x27;) &#x3e; -1
+  var io = opts.iojs !== undefined ? opts.iojs : iojsVersion(version)
+  var platform = opts.platform || process.platform
+
+  var defaultIojsUrl = nightly ? &#x27;https://iojs.org/download/nightly/&#x27; : &#x27;https://iojs.org/dist/&#x27;
+  var iojsDistUrl = pad(process.env.NVM_IOJS_ORG_MIRROR || defaultIojsUrl)
+  var nodeDistUrl = pad(process.env.NVM_NODEJS_ORG_MIRROR || &#x27;https://nodejs.org/dist/&#x27;)
+
+  var url = io
+    ? iojsDistUrl + version + &#x27;/iojs-&#x27; + version + &#x27;.tar.gz&#x27;
+    : nodeDistUrl + version + &#x27;/node-&#x27; + version + &#x27;.tar.gz&#x27;
+
+  var target = path.join(process.env.HOME || process.env.USERPROFILE, &#x27;.node-gyp&#x27;, version.slice(1))
+
+  exists(function (err) {
+    if (!err &#x26;&#x26; !opts.force) {
+      if (log) log.info(&#x27;install&#x27;, &#x27;Header files already fetched&#x27;)
+      if (log) log.info(&#x27;install&#x27;, &#x27;node-gyp should now work for &#x27; + version)
+      return cb(null)
+    }
+
+    if (log) log.http(&#x27;request&#x27;, url)
+    get(tlsopts(url), function (err, res) {
+      if (err) return cb(err)
+      if (log) log.http(res.statusCode, url)
+      pump(res, zlib.createGunzip(), map(mapEntry), tar.extract(target, {strip: 1}), function (err) {
+        if (err) return cb(err)
+        fetchWindows(function (err) {
+          if (err) return cb(err)
+          fs.writeFile(path.join(target, &#x27;installVersion&#x27;), &#x27;9&#x27;, function (err) {
+            if (err) return cb(err)
+            if (log) log.info(&#x27;install&#x27;, &#x27;node-gyp should now work for &#x27; + version)
+            cb()
+          })
+        })
+      })
+    })
+  })
+
+  function exists (cb) {
+    fs.exists(path.join(target, &#x27;installVersion&#x27;), function (exists) {
+      if (!exists) return cb(new Error(&#x27;missing installVersion&#x27;))
+      fs.exists(path.join(target, &#x27;common.gypi&#x27;), function (exists) {
+        cb(exists ? null : new Error(&#x27;missing common.gypi&#x27;))
+      })
+    })
+  }
+
+  function mapEntry (entry) {
+    return /(\.gypi$)|(\.h$)/.test(entry.name) ? entry : null
+  }
+
+  function fetchWindows (cb) {
+    if (platform !== &#x27;win32&#x27;) return cb()
+
+    var urls
+    if (io) {
+      urls = [
+        iojsDistUrl + version + &#x27;/win-x86/iojs.lib&#x27;,
+        iojsDistUrl + version + &#x27;/win-x64/iojs.lib&#x27;
+      ]
+    } else if (semver.satisfies(version, &#x27;&#x3e;=4.0.0&#x27;)) {
+      urls = [
+        nodeDistUrl + version + &#x27;/win-x86/node.lib&#x27;,
+        nodeDistUrl + version + &#x27;/win-x64/node.lib&#x27;
+      ]
+    } else {
+      urls = [
+        nodeDistUrl + version + &#x27;/node.lib&#x27;,
+        nodeDistUrl + version + &#x27;/x64/node.lib&#x27;
+      ]
+    }
+
+    var next = after(cb)
+
+    urls.forEach(function (url, index) {
+      var arch = index === 0 ? &#x27;ia32&#x27; : &#x27;x64&#x27;
+      var nodeLib = path.join(target, arch, &#x27;node.lib&#x27;)
+      var ioLib = path.join(target, arch, &#x27;iojs.lib&#x27;)
+      var parentDir = path.dirname(nodeLib)
+      var done = next()
+
+      if (log) log.http(&#x27;request&#x27;, url)
+      fs.mkdir(parentDir, function () {
+        get(tlsopts(url), function (err, res) {
+          if (err) return done(err)
+          log.http(res.statusCode, url)
+          pump(res, multi([fs.createWriteStream(nodeLib), fs.createWriteStream(ioLib)]), done)
+        })
+      })
+    })
+  }
+
+  function tlsopts (url) {
+    var getOpts = {
+      url: url,
+      passphrase: process.env.NODE_GYP_INSTALL_PASSPHRASE,
+      requestCert: true,
+      rejectUnauthorized: process.env.NODE_GYP_INSTALL_REJECTUNAUTHORIZED === &#x27;true&#x27;
+    }
+
+    if (process.env.NODE_GYP_INSTALL_PFX) {
+      getOpts.pfx = fs.readFileSync(process.env.NODE_GYP_INSTALL_PFX)
+    }
+
+    if (process.env.NODE_GYP_INSTALL_CERT) {
+      getOpts.cert = fs.readFileSync(process.env.NODE_GYP_INSTALL_CERT)
+    }
+
+    if (process.env.NODE_GYP_INSTALL_KEY) {
+      getOpts.cert = fs.readFileSync(process.env.NODE_GYP_INSTALL_KEY)
+    }
+
+    if (process.env.NODE_GYP_INSTALL_CA) {
+      getOpts.ca = [fs.readFileSync ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 </div>
 

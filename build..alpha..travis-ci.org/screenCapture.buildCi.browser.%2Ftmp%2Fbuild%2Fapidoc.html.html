@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/mafintosh/node-gyp-install"
-
-    >node-gyp-install (v2.2.0)</a>
+    <a href="https://github.com/mafintosh/node-gyp-install">node-gyp-install (v2.2.0)</a>
 </h1>
 <h4>Manually download node/iojs header files for usage with node-gyp.</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.node-gyp-install">module node-gyp-install</a><ol>
 
@@ -86,36 +79,36 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function install(opts, cb) {
-  if (typeof opts === &#x27;function&#x27;) return install(null, opts)
+  if (typeof opts === 'function') return install(null, opts)
   if (!opts) opts = {}
   if (!cb) cb = noop
 
   var log = opts.log
   var version = opts.version || process.version
-  if (version[0] !== &#x27;v&#x27;) version = &#x27;v&#x27; + version
+  if (version[0] !== 'v') version = 'v' + version
 
-  var nightly = opts.nightly !== undefined ? opts.nightly : version.indexOf(&#x27;nightly&#x27;) &#x3e; -1
+  var nightly = opts.nightly !== undefined ? opts.nightly : version.indexOf('nightly') &gt; -1
   var io = opts.iojs !== undefined ? opts.iojs : iojsVersion(version)
   var platform = opts.platform || process.platform
 
-  var defaultIojsUrl = nightly ? &#x27;https://iojs.org/download/nightly/&#x27; : &#x27;https://iojs.org/dist/&#x27;
+  var defaultIojsUrl = nightly ? 'https://iojs.org/download/nightly/' : 'https://iojs.org/dist/'
   var iojsDistUrl = pad(process.env.NVM_IOJS_ORG_MIRROR || defaultIojsUrl)
-  var nodeDistUrl = pad(process.env.NVM_NODEJS_ORG_MIRROR || &#x27;https://nodejs.org/dist/&#x27;)
+  var nodeDistUrl = pad(process.env.NVM_NODEJS_ORG_MIRROR || 'https://nodejs.org/dist/')
 
   var url = io
-    ? iojsDistUrl + version + &#x27;/iojs-&#x27; + version + &#x27;.tar.gz&#x27;
-    : nodeDistUrl + version + &#x27;/node-&#x27; + version + &#x27;.tar.gz&#x27;
+    ? iojsDistUrl + version + '/iojs-' + version + '.tar.gz'
+    : nodeDistUrl + version + '/node-' + version + '.tar.gz'
 
-  var target = path.join(process.env.HOME || process.env.USERPROFILE, &#x27;.node-gyp&#x27;, version.slice(1))
+  var target = path.join(process.env.HOME || process.env.USERPROFILE, '.node-gyp', version.slice(1))
 
   exists(function (err) {
-    if (!err &#x26;&#x26; !opts.force) {
-      if (log) log.info(&#x27;install&#x27;, &#x27;Header files already fetched&#x27;)
-      if (log) log.info(&#x27;install&#x27;, &#x27;node-gyp should now work for &#x27; + version)
+    if (!err &amp;&amp; !opts.force) {
+      if (log) log.info('install', 'Header files already fetched')
+      if (log) log.info('install', 'node-gyp should now work for ' + version)
       return cb(null)
     }
 
-    if (log) log.http(&#x27;request&#x27;, url)
+    if (log) log.http('request', url)
     get(tlsopts(url), function (err, res) {
       if (err) return cb(err)
       if (log) log.http(res.statusCode, url)
@@ -123,9 +116,9 @@
         if (err) return cb(err)
         fetchWindows(function (err) {
           if (err) return cb(err)
-          fs.writeFile(path.join(target, &#x27;installVersion&#x27;), &#x27;9&#x27;, function (err) {
+          fs.writeFile(path.join(target, 'installVersion'), '9', function (err) {
             if (err) return cb(err)
-            if (log) log.info(&#x27;install&#x27;, &#x27;node-gyp should now work for &#x27; + version)
+            if (log) log.info('install', 'node-gyp should now work for ' + version)
             cb()
           })
         })
@@ -134,10 +127,10 @@
   })
 
   function exists (cb) {
-    fs.exists(path.join(target, &#x27;installVersion&#x27;), function (exists) {
-      if (!exists) return cb(new Error(&#x27;missing installVersion&#x27;))
-      fs.exists(path.join(target, &#x27;common.gypi&#x27;), function (exists) {
-        cb(exists ? null : new Error(&#x27;missing common.gypi&#x27;))
+    fs.exists(path.join(target, 'installVersion'), function (exists) {
+      if (!exists) return cb(new Error('missing installVersion'))
+      fs.exists(path.join(target, 'common.gypi'), function (exists) {
+        cb(exists ? null : new Error('missing common.gypi'))
       })
     })
   }
@@ -147,36 +140,36 @@
   }
 
   function fetchWindows (cb) {
-    if (platform !== &#x27;win32&#x27;) return cb()
+    if (platform !== 'win32') return cb()
 
     var urls
     if (io) {
       urls = [
-        iojsDistUrl + version + &#x27;/win-x86/iojs.lib&#x27;,
-        iojsDistUrl + version + &#x27;/win-x64/iojs.lib&#x27;
+        iojsDistUrl + version + '/win-x86/iojs.lib',
+        iojsDistUrl + version + '/win-x64/iojs.lib'
       ]
-    } else if (semver.satisfies(version, &#x27;&#x3e;=4.0.0&#x27;)) {
+    } else if (semver.satisfies(version, '&gt;=4.0.0')) {
       urls = [
-        nodeDistUrl + version + &#x27;/win-x86/node.lib&#x27;,
-        nodeDistUrl + version + &#x27;/win-x64/node.lib&#x27;
+        nodeDistUrl + version + '/win-x86/node.lib',
+        nodeDistUrl + version + '/win-x64/node.lib'
       ]
     } else {
       urls = [
-        nodeDistUrl + version + &#x27;/node.lib&#x27;,
-        nodeDistUrl + version + &#x27;/x64/node.lib&#x27;
+        nodeDistUrl + version + '/node.lib',
+        nodeDistUrl + version + '/x64/node.lib'
       ]
     }
 
     var next = after(cb)
 
     urls.forEach(function (url, index) {
-      var arch = index === 0 ? &#x27;ia32&#x27; : &#x27;x64&#x27;
-      var nodeLib = path.join(target, arch, &#x27;node.lib&#x27;)
-      var ioLib = path.join(target, arch, &#x27;iojs.lib&#x27;)
+      var arch = index === 0 ? 'ia32' : 'x64'
+      var nodeLib = path.join(target, arch, 'node.lib')
+      var ioLib = path.join(target, arch, 'iojs.lib')
       var parentDir = path.dirname(nodeLib)
       var done = next()
 
-      if (log) log.http(&#x27;request&#x27;, url)
+      if (log) log.http('request', url)
       fs.mkdir(parentDir, function () {
         get(tlsopts(url), function (err, res) {
           if (err) return done(err)
@@ -192,7 +185,7 @@
       url: url,
       passphrase: process.env.NODE_GYP_INSTALL_PASSPHRASE,
       requestCert: true,
-      rejectUnauthorized: process.env.NODE_GYP_INSTALL_REJECTUNAUTHORIZED === &#x27;true&#x27;
+      rejectUnauthorized: process.env.NODE_GYP_INSTALL_REJECTUNAUTHORIZED === 'true'
     }
 
     if (process.env.NODE_GYP_INSTALL_PFX) {
@@ -221,3 +214,4 @@
     ]
 </div>
 </div>
+</body></html>
