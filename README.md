@@ -1,9 +1,14 @@
-# api documentation for  [node-gyp-install (v2.2.0)](https://github.com/mafintosh/node-gyp-install)  [![npm package](https://img.shields.io/npm/v/npmdoc-node-gyp-install.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-node-gyp-install) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-node-gyp-install.svg)](https://travis-ci.org/npmdoc/node-npmdoc-node-gyp-install)
+# npmdoc-node-gyp-install
+
+#### api documentation for  [node-gyp-install (v2.2.0)](https://github.com/mafintosh/node-gyp-install)  [![npm package](https://img.shields.io/npm/v/npmdoc-node-gyp-install.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-node-gyp-install) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-node-gyp-install.svg)](https://travis-ci.org/npmdoc/node-npmdoc-node-gyp-install)
+
 #### Manually download node/iojs header files for usage with node-gyp.
 
-[![NPM](https://nodei.co/npm/node-gyp-install.png?downloads=true)](https://www.npmjs.com/package/node-gyp-install)
+[![NPM](https://nodei.co/npm/node-gyp-install.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-gyp-install)
 
-[![apidoc](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/screenCapture.buildNpmdoc.browser._2Fhome_2Ftravis_2Fbuild_2Fnpmdoc_2Fnode-npmdoc-node-gyp-install_2Ftmp_2Fbuild_2Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/apidoc.html)
+- [https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/apidoc.html](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/apidoc.html)
+
+[![apidoc](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/screenCapture.buildCi.browser.%252Ftmp%252Fbuild%252Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/apidoc.html)
 
 ![npmPackageListing](https://npmdoc.github.io/node-npmdoc-node-gyp-install/build/screenCapture.npmPackageListing.svg)
 
@@ -52,17 +57,14 @@
     "main": "index.js",
     "maintainers": [
         {
-            "name": "mafintosh",
-            "email": "mathiasbuus@gmail.com"
+            "name": "mafintosh"
         },
         {
-            "name": "ralphtheninja",
-            "email": "ralphtheninja@riseup.net"
+            "name": "ralphtheninja"
         }
     ],
     "name": "node-gyp-install",
     "optionalDependencies": {},
-    "readme": "ERROR: No README data found!",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/mafintosh/node-gyp-install.git"
@@ -73,16 +75,6 @@
     "version": "2.2.0"
 }
 ```
-
-
-
-# <a name="apidoc.tableOfContents"></a>[table of contents](#apidoc.tableOfContents)
-
-#### [module node-gyp-install](#apidoc.module.node-gyp-install)
-
-
-
-# <a name="apidoc.module.node-gyp-install"></a>[module node-gyp-install](#apidoc.module.node-gyp-install)
 
 
 
